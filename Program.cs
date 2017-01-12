@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Net;
 using Discord;
 using Discord.Commands;
-using RestSharp;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Discord01
 {
@@ -51,23 +49,8 @@ namespace Discord01
             });
 
         }
-        
-        public class Info
-        {
-            public string data { get; set; }
-            
-        }
 
-        public class data
-        {
-            public string name { get; set; }
-        }
-
-        public class ResponseContent
-        {
-            public Info Info { get; set; }
-            public List<data> Data { get; set; }
-        }
+     
 
         public void CreateCommands()
         {
@@ -110,32 +93,30 @@ namespace Discord01
                     
                     var ValidUserName = e.GetArg("user");
                     var isValid= $"https://api.agora.gg/players/search/{ValidUserName}";
-                    
-                    //use RestSharp to get api data
-                    var client = new RestClient(isValid);
-                    var request = new RestRequest(Method.GET);//need specific elements here
-                    Console.WriteLine(isValid);
 
-                    //RestSharp.Deserializers.JsonDeserializer deserial = new RestSharp.Deserializers.JsonDeserializer();
-                    //IRestResponse<Info> response = client.Execute<Info>(request);
+                    WebClient client = new WebClient();
+                    string url = client.DownloadString(isValid);
+                    client.Dispose();
 
-                   
-                    //IRestResponse<Info> response2 = client.Execute<Info>(request);
+                    dynamic agoraData = JObject.Parse(url);
+                    //retrieve playerid and assign to int
+                    int agoraPlayerId = agoraData.data[0].id;
 
-                    //IRestResponse<subitems> response3 = client.Execute<subitems>(request);
-                    //IRestResponse<Items> response2 = deserial.Deserialize<Items>(request);
+                    //using player id grab stats from api
+                    var playerStatsPage = $"https://api.agora.gg/players/{agoraPlayerId}";
+                    WebClient statsClient = new WebClient();
+                    string statsUrl = client.DownloadString(playerStatsPage);
+                    client.Dispose();
 
-                    //var name = deserial.Deserialize<data>(response);
-                    //var name = responseContent.Data;
+                    dynamic agoraPlayerStatsData = JObject.Parse(statsUrl);
+                    //Console.WriteLine(agoraData.data[0].name);
+                    //Console.WriteLine(agoraPlayerStatsData.data.stats[0].elo); 
+                    //store the actual elo
+                    decimal elo = agoraPlayerStatsData.data.stats[0].elo;          
 
-                    Console.WriteLine(name);
-                    //Console.WriteLine(id);
-                    //outputs: [{"id":921041,"name":"Wallaby32","namePSN":"Wallaby32","namePreference":"Wallaby32","date":"2017-01-11T00:00:00Z"}]
-
-                    //Console.WriteLine(content);
 
                     //await e.Channel.SendMessage(isValid);
-                    await e.Channel.SendMessage("");             
+                    await e.Channel.SendMessage("Monolith Elo: " + elo.ToString());
 
 
                 });
