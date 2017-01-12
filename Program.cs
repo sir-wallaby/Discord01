@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
-
+using RestSharp;
 
 namespace Discord01
 {
@@ -51,6 +51,23 @@ namespace Discord01
             });
 
         }
+        
+        public class Info
+        {
+            public string data { get; set; }
+            
+        }
+
+        public class data
+        {
+            public string name { get; set; }
+        }
+
+        public class ResponseContent
+        {
+            public Info Info { get; set; }
+            public List<data> Data { get; set; }
+        }
 
         public void CreateCommands()
         {
@@ -60,12 +77,12 @@ namespace Discord01
                 .Description("Returns some random shit")
                 .Do(async (e) =>
                 {
-                    await e.Channel.SendMessage("I'm a bot and I like dicks");
+                    await e.Channel.SendMessage("I'm a bot and you like dicks");
                 });
 
             cService.CreateCommand("hello")
                 .Description("says hello to a user")
-                .Parameter("user", ParameterType.Unparsed)
+                .Parameter("user", Discord.Commands.ParameterType.Unparsed)
                 .Do(async (e) =>
                 {
                     var toReturn = $"Hello {e.GetArg("user")}";
@@ -79,6 +96,48 @@ namespace Discord01
                 {
                     await e.Channel.SendFile("5e7.png");
                     await e.Channel.SendMessage("file sent?");
+                });
+
+            //basic code for the agora.gg website retrieve elo based on parameter.
+            //endpoint to see if a user exists: https://api.agora.gg/players/search/wallaby32
+            //then use this to call the api to get stats: https://api.agora.gg/players/921041
+            cService.CreateCommand("elo")
+                .Description("this will retrieve the paragon elo for specified user. Usage !elo username")
+                .Parameter("user", Discord.Commands.ParameterType.Unparsed)
+                
+                .Do(async (e) =>
+                {
+                    
+                    var ValidUserName = e.GetArg("user");
+                    var isValid= $"https://api.agora.gg/players/search/{ValidUserName}";
+                    
+                    //use RestSharp to get api data
+                    var client = new RestClient(isValid);
+                    var request = new RestRequest(Method.GET);//need specific elements here
+                    Console.WriteLine(isValid);
+
+                    //RestSharp.Deserializers.JsonDeserializer deserial = new RestSharp.Deserializers.JsonDeserializer();
+                    //IRestResponse<Info> response = client.Execute<Info>(request);
+
+                   
+                    //IRestResponse<Info> response2 = client.Execute<Info>(request);
+
+                    //IRestResponse<subitems> response3 = client.Execute<subitems>(request);
+                    //IRestResponse<Items> response2 = deserial.Deserialize<Items>(request);
+
+                    //var name = deserial.Deserialize<data>(response);
+                    //var name = responseContent.Data;
+
+                    Console.WriteLine(name);
+                    //Console.WriteLine(id);
+                    //outputs: [{"id":921041,"name":"Wallaby32","namePSN":"Wallaby32","namePreference":"Wallaby32","date":"2017-01-11T00:00:00Z"}]
+
+                    //Console.WriteLine(content);
+
+                    //await e.Channel.SendMessage(isValid);
+                    await e.Channel.SendMessage("");             
+
+
                 });
 
         }
