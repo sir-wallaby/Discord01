@@ -99,10 +99,10 @@ namespace Discord01
                     client.Dispose();
 
                     dynamic agoraData = JObject.Parse(url);
-                    int agoraPlayerId = agoraData.data[0].id;
-                    //retrieve playerid and assign to int
-                    //also if statment to find out if PC player or not if so, then return second set of results. 
-                    if (agoraData.data[1].id != null)
+                    int agoraPlayerId = agoraData.data[0].id;                    
+                    string name = agoraData.data[0].name;                                     
+                    //account for pc names
+                    if (String.IsNullOrEmpty(name))
                     {
                         agoraPlayerId = agoraData.data[1].id;
                     }
@@ -111,10 +111,11 @@ namespace Discord01
                         agoraPlayerId = agoraData.data[0].id;
                     }
 
-                    //Console.WriteLine(agoraPlayerId.ToString());
-                    
-                    //using player id grab stats from api
-                    var playerStatsPage = $"https://api.agora.gg/players/{agoraPlayerId}";
+                        //Console.WriteLine(agoraPlayerId.ToString());
+                        //Console.WriteLine(agoraPcId.ToString());
+
+                        //using player id grab stats from api
+                        var playerStatsPage = $"https://api.agora.gg/players/{agoraPlayerId}";
                     WebClient statsClient = new WebClient();
                     string statsUrl = client.DownloadString(playerStatsPage);
                     client.Dispose();
@@ -123,8 +124,9 @@ namespace Discord01
                     //store the actual elo
                     decimal elo = agoraPlayerStatsData.data.stats[0].elo;
 
-                    //Console.WriteLine(agoraData.data[0].id);
+                    //Console.WriteLine(agoraPlayerId);
                     //Console.WriteLine(agoraData.data[1].id);
+                    
 
                     //Console.WriteLine(agoraPlayerStatsData.data.stats[0].elo);
 
