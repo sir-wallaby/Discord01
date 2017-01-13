@@ -91,32 +91,45 @@ namespace Discord01
                 .Do(async (e) =>
                 {
                     
-                    var ValidUserName = e.GetArg("user");
-                    var isValid= $"https://api.agora.gg/players/search/{ValidUserName}";
+                    var userName = e.GetArg("user").Replace(" ","");                    
+                    var isValid= $"https://api.agora.gg/players/search/{userName}";
 
                     WebClient client = new WebClient();
                     string url = client.DownloadString(isValid);
                     client.Dispose();
 
                     dynamic agoraData = JObject.Parse(url);
-                    //retrieve playerid and assign to int
                     int agoraPlayerId = agoraData.data[0].id;
+                    //retrieve playerid and assign to int
+                    //also if statment to find out if PC player or not if so, then return second set of results. 
+                    if (agoraData.data[1].id != null)
+                    {
+                        agoraPlayerId = agoraData.data[1].id;
+                    }
+                    else
+                    {
+                        agoraPlayerId = agoraData.data[0].id;
+                    }
 
+                    //Console.WriteLine(agoraPlayerId.ToString());
+                    
                     //using player id grab stats from api
                     var playerStatsPage = $"https://api.agora.gg/players/{agoraPlayerId}";
                     WebClient statsClient = new WebClient();
                     string statsUrl = client.DownloadString(playerStatsPage);
                     client.Dispose();
 
-                    dynamic agoraPlayerStatsData = JObject.Parse(statsUrl);
-                    //Console.WriteLine(agoraData.data[0].name);
-                    //Console.WriteLine(agoraPlayerStatsData.data.stats[0].elo); 
+                    dynamic agoraPlayerStatsData = JObject.Parse(statsUrl);                     
                     //store the actual elo
-                    decimal elo = agoraPlayerStatsData.data.stats[0].elo;          
+                    decimal elo = agoraPlayerStatsData.data.stats[0].elo;
 
+                    //Console.WriteLine(agoraData.data[0].id);
+                    //Console.WriteLine(agoraData.data[1].id);
 
-                    //await e.Channel.SendMessage(isValid);
-                    await e.Channel.SendMessage("Monolith Elo: " + elo.ToString());
+                    //Console.WriteLine(agoraPlayerStatsData.data.stats[0].elo);
+
+                    //await e.Channel.SendMessage("");
+                    await e.Channel.SendMessage("Agora Elo: " + elo.ToString());
 
 
                 });
