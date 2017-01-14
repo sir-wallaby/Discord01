@@ -123,15 +123,26 @@ namespace Discord01
                     dynamic agoraPlayerStatsData = JObject.Parse(statsUrl);                     
                     //store the actual elo
                     decimal elo = agoraPlayerStatsData.data.stats[0].elo;
+                    //store wins/losses/etc for other stats
+                    double wins = agoraPlayerStatsData.data.stats[0].wins;
+                    double gamesplayed = agoraPlayerStatsData.data.stats[0].gamesPlayed;
+                    double winPercentage = (wins / gamesplayed);
+                    double kills = agoraPlayerStatsData.data.stats[0].kills; double deaths = agoraPlayerStatsData.data.stats[0].deaths; double assists = agoraPlayerStatsData.data.stats[0].assists;
+                    double kd = (kills + assists);
+                    double kda = (kd / deaths);
 
-                    //Console.WriteLine(agoraPlayerId);
-                    //Console.WriteLine(agoraData.data[1].id);
-                    
+                    //Console.WriteLine(kd);
+                    //Console.WriteLine(kda);
+
 
                     //Console.WriteLine(agoraPlayerStatsData.data.stats[0].elo);
 
                     //await e.Channel.SendMessage("");
-                    await e.Channel.SendMessage("Agora Elo: " + elo.ToString());
+                    await e.Channel.SendMessage("Agora Elo: " + elo.ToString() + "\n" +
+                                                "Wins: " + wins.ToString() + "\n" +
+                                                "Games Played: " + gamesplayed.ToString() + "\n" +
+                                                "Win Percentage:" + winPercentage.ToString() + "\n" +
+                                                "KDA:" + kda.ToString());
 
 
                 });
