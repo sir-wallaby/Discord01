@@ -84,6 +84,7 @@ namespace Discord01
             //basic code for the agora.gg website retrieve elo based on parameter.
             //endpoint to see if a user exists: https://api.agora.gg/players/search/wallaby32
             //then use this to call the api to get stats: https://api.agora.gg/players/921041
+            //Maybe create another elo command that is able to search on psnID?
             cService.CreateCommand("elo")
                 .Description("this will retrieve the paragon elo for specified user. Usage !elo username")
                 .Parameter("user", Discord.Commands.ParameterType.Unparsed)
