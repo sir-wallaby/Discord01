@@ -72,13 +72,13 @@ namespace Discord01
                     await e.Channel.SendMessage(toReturn);
                 });
 
-            //send file based on parameter
-            cService.CreateCommand("send file")
-                .Description("Sends a file to the channel")
+            //spread sheet link. 
+            cService.CreateCommand("numbers")
+                .Description("Sends a link to a useful paragon spreadsheet")
                 .Do(async (e) =>
                 {
-                    await e.Channel.SendFile("5e7.png");
-                    await e.Channel.SendMessage("file sent?");
+                    await e.Channel.SendMessage("https://docs.google.com/spreadsheets/d/1_J9pKPGp1ddmSpNB_jcFhjjq_OPSILDmjdwzqre3i3U/edit#gid=1224517746");
+                    
                 });
 
             //send file based on parameter
