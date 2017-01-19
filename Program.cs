@@ -81,6 +81,15 @@ namespace Discord01
                     await e.Channel.SendMessage("file sent?");
                 });
 
+            //send file based on parameter
+            cService.CreateCommand("elochart")
+                .Description("Shows a snippet of the elo breakdown for agora.gg to the channel")
+                .Do(async (e) =>
+                {
+                    await e.Channel.SendFile("EloBrackets.png");
+                    //await e.Channel.SendMessage("file sent?");
+                });
+
             //basic code for the agora.gg website retrieve elo based on parameter.
             //endpoint to see if a user exists: https://api.agora.gg/players/search/wallaby32
             //then use this to call the api to get stats: https://api.agora.gg/players/921041
