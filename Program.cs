@@ -101,7 +101,7 @@ namespace Discord01
                 .Do(async (e) =>
                 {
                     
-                    var userName = e.GetArg("user").Replace(" ","");                    
+                    var userName = e.GetArg("user"); //you can use spaces so removed the replace method.                    
                     var isValid= $"https://api.agora.gg/players/search/{userName}";
 
                     WebClient client = new WebClient();
