@@ -39,7 +39,7 @@ namespace Discord01
                 x.HelpMode = HelpMode.Public;
             });
 
-            var token = "MjY4NTQxOTYwMDg2NzQ5MTg1.C1cmTw.9IZS6AIWT6irllB6GXTzQgS2e54";
+            var token = "Token_here";
 
             CreateCommands();
 
