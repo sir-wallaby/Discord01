@@ -4,6 +4,7 @@ using Discord;
 using Discord.Commands;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Linq;
 
 namespace Discord01
 {
@@ -39,7 +40,7 @@ namespace Discord01
                 x.HelpMode = HelpMode.Public;
             });
 
-            var token = "Token_here";
+            var token = "MjY4NTQxOTYwMDg2NzQ5MTg1.C2gJrA.8eV7UcjTf3Z0u9NBodpRRpY2Dho";
 
             CreateCommands();
 
@@ -121,30 +122,55 @@ namespace Discord01
                         agoraPlayerId = agoraData.data[0].id;
                     }
 
-                        //Console.WriteLine(agoraPlayerId.ToString());
-                        //Console.WriteLine(agoraPcId.ToString());
+                    //Console.WriteLine(name.ToString());
+                    //Console.WriteLine(agoraPlayerId.ToString());
 
-                        //using player id grab stats from api
-                        var playerStatsPage = $"https://api.agora.gg/players/{agoraPlayerId}";
+                    //using player id grab stats from api
+                    var playerStatsPage = $"https://api.agora.gg/players/{agoraPlayerId}";
                     WebClient statsClient = new WebClient();
                     string statsUrl = client.DownloadString(playerStatsPage);
                     client.Dispose();
 
-                    dynamic agoraPlayerStatsData = JObject.Parse(statsUrl);                     
+                    dynamic agoraPlayerStatsData = JObject.Parse(statsUrl);
+                    
+                    //create and initialize gameModeSignal array
+                    int[] gameModeSignal = new int[3];
+                    //assign all stats values to the array
+                    gameModeSignal[0] = agoraPlayerStatsData.data.stats[0].mode;
+                    gameModeSignal[1] = agoraPlayerStatsData.data.stats[1].mode; //still a bug here. will have to fix 
+                    //if (String.IsNullOrEmpty(agoraPlayerStatsData.data.stats[2].mode))
+                    //{
+                    //    return;
+                    //}
+                    //else
+                    //{
+                    //    gameModeSignal[2] = agoraPlayerStatsData.data.stats[2].mode;
+                    //}
+                   
+
+                    //value that I want to search for. I'm assuming 4 is the MP mode
+                    int myValue = 4; 
+                    //get the index back, which, tells me which stats array part I need to look in for correct stats.
+                    int arrayIndex = Array.IndexOf(gameModeSignal, myValue);
+
+                    //for (int i = 0; i <= gameModeSignal.Length;i++)
+                    //{
+                    //    Console.WriteLine(gameModeSignal[i]);
+                    //}
+
+                    //Console.WriteLine(arrayIndex);
+                    
                     //store the actual elo
-                    decimal elo = agoraPlayerStatsData.data.stats[0].elo;
+                    decimal elo = agoraPlayerStatsData.data.stats[arrayIndex].elo;
                     //store wins/losses/etc for other stats
-                    double wins = agoraPlayerStatsData.data.stats[0].wins;
-                    double gamesplayed = agoraPlayerStatsData.data.stats[0].gamesPlayed;
+                    double wins = agoraPlayerStatsData.data.stats[arrayIndex].wins;
+                    double gamesplayed = agoraPlayerStatsData.data.stats[arrayIndex].gamesPlayed;
                     double winPercentage = (wins / gamesplayed);
-                    double kills = agoraPlayerStatsData.data.stats[0].kills; double deaths = agoraPlayerStatsData.data.stats[0].deaths; double assists = agoraPlayerStatsData.data.stats[0].assists;
+                    double kills = agoraPlayerStatsData.data.stats[arrayIndex].kills; double deaths = agoraPlayerStatsData.data.stats[arrayIndex].deaths; double assists = agoraPlayerStatsData.data.stats[arrayIndex].assists;
                     double kd = (kills + assists);
                     double kda = (kd / deaths);
-
-                    //Console.WriteLine(kd);
-                    //Console.WriteLine(kda);
-
-
+                    //Console.WriteLine(elo);
+                    //Console.WriteLine(wins);
                     //Console.WriteLine(agoraPlayerStatsData.data.stats[0].elo);
 
                     //await e.Channel.SendMessage("");
