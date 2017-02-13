@@ -30,7 +30,7 @@ namespace Discord01
                 x.AppName = "Discord Test Bot";
                 //github
                 x.AppUrl = "https://github.com/sir-wallaby/Discord01"; 
-                x.LogLevel = LogSeverity.Info;
+                x.LogLevel = LogSeverity.Verbose;
                 x.LogHandler = Log;             
 
             });
@@ -42,7 +42,7 @@ namespace Discord01
                 x.HelpMode = HelpMode.Public;
             });
 
-            var token = "Token_here";
+            var token = "MjY4NTQxOTYwMDg2NzQ5MTg1.C3K-kQ.8MNDuB218bzio0J7_eZTVm2yTWo";
 
             CreateCommands();
 
@@ -51,9 +51,11 @@ namespace Discord01
                 await _client.Connect(token, TokenType.Bot);
             });
 
+
         }
 
-     
+
+
 
         public void CreateCommands()
         {
@@ -234,11 +236,24 @@ namespace Discord01
 
                 });
 
+            cService.CreateCommand("clearchat")
+            .AddCheck((cmd, u, ch) => u.ServerPermissions.Administrator)
+             .Do(async (e) =>
+             {
+                 Discord.Message[] messagesToDelete;
+                 messagesToDelete = await e.Channel.DownloadMessages(100);
+
+                 await e.Channel.DeleteMessages(messagesToDelete);
+
+             });
+
         }
 
         public void Log(object sender, LogMessageEventArgs e)
         {
             Console.WriteLine($"[{e.Severity}] [{e.Source}] {e.Message}");
         }
+
+
     }
 }
