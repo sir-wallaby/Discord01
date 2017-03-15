@@ -156,8 +156,10 @@ namespace Discord01
                     dynamic multipleValuesFromStats0 = 0;
                     dynamic multipleValuesFromStats1 = 0;
                     dynamic multipleValuesFromStats2 = 0;
+                    dynamic multipleValuesFromStats3 = 0;
                     dynamic mutipleOutput0 = 0;
                     dynamic mutipleOutput1 = 0;
+                    dynamic multpleOutput2 = 0;
                     dynamic finalPlayerStats = 0;
 
                     //if structure to help determine which stats to use.
@@ -213,8 +215,40 @@ namespace Discord01
 
                         finalPlayerStats = mutipleOutput1;
 
-                    }           
-                    
+                    }
+
+                    if (numberOfStatItems == 4)
+                    {
+                        multipleValuesFromStats0 = agoraPlayerStatsDataDynamic.data.stats[0];
+                        multipleValuesFromStats1 = agoraPlayerStatsDataDynamic.data.stats[1];
+                        multipleValuesFromStats2 = agoraPlayerStatsDataDynamic.data.stats[2];
+                        multipleValuesFromStats3 = agoraPlayerStatsDataDynamic.data.stats[3];
+
+                        string modeValue0 = multipleValuesFromStats0.mode;
+                        string modeValue1 = multipleValuesFromStats1.mode;
+                        string modeValue2 = multipleValuesFromStats2.mode;
+                        string modeValue3 = multipleValuesFromStats3.mode;
+
+                        if (modeValue0 == "4")
+                        {
+                            mutipleOutput1 = multipleValuesFromStats0;
+                        }
+                        if (modeValue1 == "4")
+                        {
+                            mutipleOutput1 = multipleValuesFromStats1;
+                        }
+                        if (modeValue2 == "4")
+                        {
+                            mutipleOutput1 = multipleValuesFromStats2;
+                        }
+                        if (modeValue2 == "4")
+                        {
+                            mutipleOutput1 = multipleValuesFromStats3;
+                        }
+
+                        finalPlayerStats = mutipleOutput1;
+
+                    }
                     //store the actual elo
                     decimal elo = finalPlayerStats.elo;
                     //store wins/ losses / etc for other stats
