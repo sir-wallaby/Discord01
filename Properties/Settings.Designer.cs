@@ -31,5 +31,14 @@ namespace Discord01.Properties {
                 return ((string)(this["Token"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5efa873e-8d3f-4113-9496-8d6a35843c9d")]
+        public string TRN_Api_Key {
+            get {
+                return ((string)(this["TRN_Api_Key"]));
+            }
+        }
     }
 }

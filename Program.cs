@@ -5,7 +5,10 @@ using Discord.Commands;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Linq;
+using System.Threading.Tasks;
 using Discord01.Properties;
+using PUBGSharp;
+using System.Globalization;
 
 namespace Discord01
 {
@@ -283,8 +286,6 @@ namespace Discord01
                 {
                     try
                     {
-
-
                         var searchTerm = e.GetArg("word"); //you can use spaces so removed the replace method.                    
                         var searchValue = $"http://api.urbandictionary.com/v0/define?term={searchTerm}";
 
@@ -321,6 +322,96 @@ namespace Discord01
 
 
                 });
+
+
+            cService.CreateCommand("sq")
+                .Description("Grabs stats for PUBG online from PUBG Tracker")
+                .Parameter("user", Discord.Commands.ParameterType.Unparsed)
+            .Do(async (e) =>
+            {
+                await e.Channel.SendIsTyping();
+                var pubgUsername_PC = e.GetArg("user").Replace(" ","");
+
+                string apiKey = Discord01.Properties.Settings.Default.TRN_Api_Key;
+                //create statsClient with proper api key
+                var statsClient = new PUBGStatsClient(apiKey);
+                //use wrapper to call the api
+                var stats = await statsClient.GetPlayerStatsAsync(pubgUsername_PC);                            
+
+                try
+                {
+                    var SquadRank = stats.Stats.Find(x =>
+                        x.Mode == Mode.Squad && x.Region == PUBGSharp.Region.NA && x.Season == Season.EASeason2).Stats.Find(x =>
+                            x.Stat == Stats.Rating).Rank;
+
+                    var KDR = stats.Stats.Find(x =>
+                        x.Mode == Mode.Squad && x.Region == PUBGSharp.Region.NA && x.Season == Season.EASeason2).Stats.Find(x =>
+                            x.Stat == Stats.KDR).Value;
+
+                    var kills = stats.Stats.Find(x =>
+                        x.Mode == Mode.Squad && x.Region == PUBGSharp.Region.NA && x.Season == Season.EASeason2).Stats.Find(x =>
+                            x.Stat == Stats.Kills).Value;
+
+                    var wins = stats.Stats.Find(x =>
+                        x.Mode == Mode.Squad && x.Region == PUBGSharp.Region.NA && x.Season == Season.EASeason2).Stats.Find(x =>
+                            x.Stat == Stats.Wins).Value;
+
+                    var win_percentage = stats.Stats.Find(x =>
+                        x.Mode == Mode.Squad && x.Region == PUBGSharp.Region.NA && x.Season == Season.EASeason2).Stats.Find(x =>
+                            x.Stat == Stats.WinPercentage).Value;
+
+                    var roundsPlayed = stats.Stats.Find(x =>
+                        x.Mode == Mode.Squad && x.Region == PUBGSharp.Region.NA && x.Season == Season.EASeason2).Stats.Find(x =>
+                            x.Stat == Stats.RoundsPlayed).Value;
+
+                    var KPG = stats.Stats.Find(x =>
+                       x.Mode == Mode.Squad && x.Region == PUBGSharp.Region.NA && x.Season == Season.EASeason2).Stats.Find(x =>
+                           x.Stat == Stats.KillsPerGame).Value;
+                    
+                    var longestkill = stats.Stats.Find(x =>
+                      x.Mode == Mode.Squad && x.Region == PUBGSharp.Region.NA && x.Season == Season.EASeason2).Stats.Find(x =>
+                          x.Stat == Stats.LongestKill).Value;
+
+                    var KO = stats.Stats.Find(x =>
+                      x.Mode == Mode.Squad && x.Region == PUBGSharp.Region.NA && x.Season == Season.EASeason2).Stats.Find(x =>
+                          x.Stat == Stats.Knockouts).Value;
+
+                    var rating = stats.Stats.Find(x =>
+                      x.Mode == Mode.Squad && x.Region == PUBGSharp.Region.NA && x.Season == Season.EASeason2).Stats.Find(x =>
+                          x.Stat == Stats.Rating).Value;
+
+                    double knockoutsPerGame = Math.Round((double.Parse(KO) / double.Parse(roundsPlayed)),3);
+
+                    await e.Channel.SendMessage("\n```Rank: " + SquadRank.ToString() + "\n" +
+                                                "Rating: " + rating.ToString() + "\n" + "\n" +
+
+                                                "KDR: " + KDR.ToString() + "\n"+
+                                                "Kills: " + kills.ToString() + "\n" +
+                                                "Kills/Game: " + KPG.ToString() + "\n" +
+                                                "Knockouts: " + KO.ToString() + "\n" +
+                                                "Knockouts/Game: " + knockoutsPerGame.ToString() + "\n" +
+                                                "Longest Kill: " + longestkill.ToString() + " meters \n" + "\n" +
+
+                                                "Wins: " + wins.ToString() + "\n" +
+                                                "Win Percentage: " + win_percentage + "\n" +
+                                                "Games Played: " + roundsPlayed + "\n" + "```");
+
+                    await e.Channel.SendMessage("Stats last updated at: " + stats.LastUpdated);
+                }
+
+                catch (PUBGSharpException)
+                {
+
+                    throw;
+                    //await e.Channel.SendMessage("Could not retrieve stats for " + pubgUsername_PC + " error: " + ex.Message);
+                }
+
+                catch (ArgumentNullException excep)
+                {
+                    await e.Channel.SendMessage("Could not retrieve stats for " + pubgUsername_PC + " error: " + excep.Message);
+                }
+
+            });
 
 
                 }
