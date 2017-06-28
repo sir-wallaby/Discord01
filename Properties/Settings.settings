@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="Token" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">Redacted-yg</Value>
+      <Value Profile="(Default)">MjY4NTQxOTYwMDg2NzQ5MTg1.DDCFOQ.CcQQAel4xN7I31AKAmzA7LeD-yg</Value>
     </Setting>
     <Setting Name="TRN_Api_Key" Type="System.String" Scope="Application">
       <Value Profile="(Default)">5efa873e-8d3f-4113-9496-8d6a35843c9d</Value>
