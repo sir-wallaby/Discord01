@@ -7,6 +7,11 @@
 *.userosscache
 *.sln.docstates
 
+# Data sensitive objects
+App.config
+Properties/
+
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
