@@ -1,7 +1,11 @@
 # Discord01 bot
 First bot within Discord using Discord.net
 
-*Mainly used for ELO ranking in Paragon and checking PUBG online stats using PUBG tracker API*
+*Mainly used for ELO ranking in Paragon
+
+USAGE:
+.elo username
+.ud term (used to define things from the Urban Dictonary URL)
 
 Built using Nuget package Discord.NET 0.9.6
 
