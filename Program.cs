@@ -7,8 +7,8 @@ using Newtonsoft.Json.Linq;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord01.Properties;
-using PUBGSharp;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace Discord01
 {
@@ -93,7 +93,7 @@ namespace Discord01
                     await e.Channel.SendFile("EloBrackets.png");
                     //await e.Channel.SendMessage("file sent?");
                 });
-            
+
             //TODO:make this a leaner code base. too large and too many IF blocks
             //basic code for the agora.gg website retrieve elo based on parameter.
             //endpoint to see if a user exists: https://api.agora.gg/players/search/wallaby32
@@ -254,17 +254,47 @@ namespace Discord01
                     //store wins/ losses / etc for other stats
                     double wins = finalPlayerStats.wins;
                     double gamesplayed = finalPlayerStats.gamesPlayed;
-                    double winPercentage = Math.Round((wins / gamesplayed),3);
+                    double winPercentage = Math.Round((wins / gamesplayed), 3);
                     double kills = finalPlayerStats.kills; double deaths = finalPlayerStats.deaths; double assists = finalPlayerStats.assists;
                     double kd = (kills + assists);
                     double kda = (kd / deaths);
-                    
+
                     //OUTput of the entire BLOCK
                     await e.Channel.SendMessage("Agora Elo: " + elo.ToString() + "\n" +
                                                 "Wins: " + wins.ToString() + "\n" +
                                                 "Games Played: " + gamesplayed.ToString() + "\n" +
                                                 "Win Percentage:" + winPercentage.ToString() + "\n" +
                                                 "KDA:" + kda.ToString());
+                });
+
+            cService.CreateCommand("patchnotes")
+                .Description("Pulls back the offical patch notes from Epic Games website")
+
+                .Do(async (e) =>
+                {
+
+                    var epicGamesAPI = $"https://www.epicgames.com/paragon/api/blog/getPosts";
+
+                    WebClient client = new WebClient();
+
+                    string blogPostData = client.DownloadString(epicGamesAPI);
+                    client.Dispose();
+
+                    dynamic ParsedBlogData = JObject.Parse(blogPostData);
+                    int upperLimit = ParsedBlogData.categoryMap.all;
+                    string outputURL = "";
+                    for (int i = 0; i < upperLimit ; i++)
+                    {
+                        if (ParsedBlogData.blogList[i].category[0] == "patch notes")
+                        {
+                            outputURL = ParsedBlogData.blogList[i].link;
+                            break;
+                        }                        
+                    }
+
+                
+                    Console.WriteLine(outputURL);
+                    await e.Channel.SendMessage("https://www.epicgames.com/" + outputURL);
                 });
 
             cService.CreateCommand("clearchat")
